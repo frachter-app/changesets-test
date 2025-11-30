@@ -1,0 +1,57 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/refs/tags/%40tauri-apps/api-v2.8.0/crates/tauri-cli/schema.json",
+  "app": {
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "backgroundThrottling": "disabled",
+        "fullscreen": false,
+        "height": 700,
+        "minHeight": 700,
+        "minWidth": 1000,
+        "resizable": true,
+        "title": "CloudPrint",
+        "useHttpsScheme": true,
+        "width": 1000
+      }
+    ]
+  },
+  "build": {
+    "beforeBuildCommand": "pnpm run build",
+    "beforeDevCommand": "pnpm run dev",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
+  },
+  "bundle": {
+    "active": true,
+    "createUpdaterArtifacts": true,
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "targets": "all",
+    "windows": {
+      "nsis": {
+        "languages": [
+          "German"
+        ]
+      }
+    }
+  },
+  "identifier": "app.frachter.cloudprint",
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://storage.frachter.app/cloudprint/latest/update-{{target}}-{{arch}}.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDgyMDU0NEMyRUMxQTk1QkMKUldTOGxScnN3a1FGZ3ZEZXloUDdGNE9EL1hmdUxhanZZS0ZZdEZTRm5OOHlNanJJdHFtZStXZW0K"
+    }
+  },
+  "productName": "CloudPrint",
+  "version": "1.0.4"
+}

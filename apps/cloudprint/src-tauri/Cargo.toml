@@ -1,0 +1,16 @@
+[package]
+name = "cloudprint"
+version = "1.0.4"
+description = "CloudPrint"
+authors = ["you"]
+# license = ""
+# repository = ""
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+
+[dependencies]
+
+[features]
