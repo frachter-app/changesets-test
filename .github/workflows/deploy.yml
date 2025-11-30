@@ -1,0 +1,64 @@
+name: Deploy on Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  orchestrator:
+    runs-on: ubuntu-latest
+    # FIX 1: Wrap the whole expression in double quotes to handle the colon safely
+    if: "startsWith(github.event.head_commit.message, 'chore: release versions')"
+    # FIX 2: outputs must be at the same level as steps (2 spaces indent)
+    outputs:
+      # FIX 3: Wrap the value in quotes
+      released: "${{ steps.check.outputs.released }}"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3
+
+      - name: Check released apps
+        id: check
+        run: bun run scripts/check-released.ts
+
+  deploy-backend:
+    needs: orchestrator
+    # Logic: Run if 'backend' is in the list
+    if: contains(fromJSON(needs.orchestrator.outputs.released), 'backend')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy Backend
+        run: echo "🚀 Deploying Backend..."
+
+  deploy-cloudprint:
+    needs: [orchestrator, deploy-backend]
+    # Logic: Always check -> If cloudprint released -> Wait for backend success/skip
+    if: |
+      always() && 
+      contains(fromJSON(needs.orchestrator.outputs.released), 'cloudprint') && 
+      (needs.deploy-backend.result == 'success' || needs.deploy-backend.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy Cloudprint
+        run: echo "🖨️ Deploying Cloudprint..."
+
+  deploy-frachter:
+    needs: [orchestrator, deploy-backend]
+    if: |
+      always() && 
+      contains(fromJSON(needs.orchestrator.outputs.released), 'frachter') && 
+      (needs.deploy-backend.result == 'success' || needs.deploy-backend.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy Frachter
+        run: echo "🚢 Deploying Frachter..."
