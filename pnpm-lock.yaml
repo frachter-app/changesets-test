@@ -12,6 +12,19 @@ importers:
         specifier: ^2.29.8
         version: 2.29.8(@types/node@24.10.1)
 
+  apps/backend:
+    dependencies:
+      lib:
+        specifier: workspace:*
+        version: link:../../packages/lib
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+    devDependencies:
+      '@types/bun':
+        specifier: latest
+        version: 1.3.3
+
   apps/cloudprint:
     dependencies:
       lib:
