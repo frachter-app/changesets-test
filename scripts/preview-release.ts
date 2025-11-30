@@ -1,17 +1,15 @@
-import { $ } from "bun";
+import { $, file } from "bun";
 import * as fs from "node:fs";
 import { readdir } from "node:fs/promises";
 
-// 1. Get the list of ALL apps by scanning the 'apps/' directory
-// This replaces the hardcoded list ["cloudprint", "frachter"]
+// 1. Get the list of ALL apps
 const allAppsEntries = await readdir("apps", { withFileTypes: true });
 const allApps = allAppsEntries
   .filter((dirent) => dirent.isDirectory())
   .map((dirent) => dirent.name)
-  .sort(); // Alphabetical order for the table
+  .sort();
 
 // 2. Get the list of CHANGED apps in this PR
-// We check the diff against origin/main
 const diffOutput = await $`git diff --name-only origin/main...HEAD`.text();
 
 const changedApps = diffOutput
@@ -28,26 +26,33 @@ let markdown = "### 🚀 Release Preview\n\n";
 if (changedAppsSet.size === 0) {
   markdown += "No app version bumps detected. Nothing will deploy.";
 } else {
-  markdown += "| App | Status | Waits For |\n";
-  markdown += "| :--- | :--- | :--- |\n";
+  markdown += "| App | Status | Version | Waits For |\n";
+  markdown += "| :--- | :--- | :--- | :--- |\n";
 
   for (const app of allApps) {
-    // Dynamic Logic:
-    // 1. Is it the backend?
     const isBackend = app === "backend";
-    
-    // 2. What does it wait for? (Your rule: Apps wait for backend)
-    // If it's backend, it waits for nothing. If it's an app, it waits for backend.
     const dependencies = isBackend ? "-" : "backend";
-
-    // 3. Status Check
     const isChanged = changedAppsSet.has(app);
-    const status = isChanged ? "🟢 **Will Deploy**" : "⚪ Skipped";
     
-    // Bold the app name if it's changing
-    const appName = isChanged ? `**${app}**` : app;
+    let status = "⚪ Skipped";
+    let versionDisplay = "-";
+    let appName = app;
 
-    markdown += `| ${appName} | ${status} | ${dependencies} |\n`;
+    if (isChanged) {
+      status = "🟢 **Will Deploy**";
+      appName = `**${app}**`;
+
+      // READ THE NEW VERSION
+      try {
+        const pkgPath = `apps/${app}/package.json`;
+        const pkg = await file(pkgPath).json();
+        versionDisplay = `**v${pkg.version}**`;
+      } catch (e) {
+        versionDisplay = "⚠️ Err";
+      }
+    }
+
+    markdown += `| ${appName} | ${status} | ${versionDisplay} | ${dependencies} |\n`;
   }
 }
 
@@ -57,6 +62,5 @@ if (process.env.GITHUB_OUTPUT) {
     const output = `comment<<${delimiter}\n${markdown}\n${delimiter}\n`;
     fs.appendFileSync(process.env.GITHUB_OUTPUT, output);
 } else {
-    // Local testing
     console.log(markdown);
 }
