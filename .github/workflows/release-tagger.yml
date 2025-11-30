@@ -1,0 +1,40 @@
+name: Release Tagger
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to push tags
+      pull-requests: write # Needed to create PRs
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Create Release Pull Request or Tag
+        uses: changesets/action@v1
+        with:
+          # This command runs when the Action detects a 'Version Packages' PR was merged.
+          # We use a dummy script or a lightweight tag script here.
+          publish: npx changeset tag
+          commit: "chore: release versions"
+          title: "chore: release versions"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
