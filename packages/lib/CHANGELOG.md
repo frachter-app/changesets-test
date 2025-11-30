@@ -1,5 +1,11 @@
 # lib
 
+## 1.1.0
+
+### Minor Changes
+
+- 4374fcb: test 3
+
 ## 1.0.2
 
 ### Patch Changes
