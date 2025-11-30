@@ -1,5 +1,12 @@
 # cloudprint
 
+## 1.0.7
+
+### Patch Changes
+
+- Updated dependencies [a1ee812]
+  - lib2@1.2.0
+
 ## 1.0.6
 
 ### Patch Changes
