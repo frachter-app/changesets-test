@@ -42,4 +42,4 @@ jobs:
           commit: "chore: release versions"
           title: "chore: release versions"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
