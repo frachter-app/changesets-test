@@ -1,5 +1,11 @@
 # lib
 
+## 1.2.0
+
+### Minor Changes
+
+- f38e9a7: again 3
+
 ## 1.1.0
 
 ### Minor Changes
