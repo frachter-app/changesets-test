@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "version-packages": "changeset version && bun run scripts/sync-cloudprint-version.ts",
+    "version-packages": "changeset version && bun run scripts/workflows/sync-cloudprint-version.ts",
     "check": "echo 'running test, lint etc.'"
   },
   "keywords": [],
