@@ -45,7 +45,7 @@ runs:
         cache: "pnpm"
 
     - name: Setup Bun
-      if: inputs.bun-disable == 'false'
+      if: inputs.install-bun-disable == 'false'
       uses: oven-sh/setup-bun@v2
       with:
         bun-version: 1.3
