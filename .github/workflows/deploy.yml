@@ -26,7 +26,7 @@ jobs:
 
       - name: Detect Release & Apps
         id: detect
-        run: bun run scripts/detect-release.ts
+        run: bun run scripts/workflows/detect-release.ts
 
   # -------------------------
   # BACKEND

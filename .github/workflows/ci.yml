@@ -1,0 +1,29 @@
+name: CI / Pre-release Check
+
+on:
+  pull_request:
+    # This triggers on any PR targeting 'main'
+    branches:
+      - main
+    # Optional: If you ONLY want to run this when coming from 'staging', uncomment below:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate:
+    name: Validation (Check)
+    runs-on: ubuntu-latest
+    # Optional: Enforce that this runs only for staging -> main PRs
+    if: github.head_ref == 'staging'
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup
+        with:
+          workspace: "*"
+          install-rust: "true"
+
+      # 5. Run the Check
+      - name: Run Check
+        run: pnpm run check
