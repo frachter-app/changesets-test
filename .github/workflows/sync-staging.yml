@@ -1,0 +1,33 @@
+name: Sync Main to Staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Critical: fetch all history so we can merge branches
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge Main into Staging
+        run: |
+          # 1. Checkout staging
+          git checkout staging
+
+          # 2. Merge main
+          # We use --no-ff (no fast forward) to create a merge commit that documents the sync
+          # We add [skip ci] to prevent triggering the Staging/Nightly build pipeline
+          git merge origin/main --no-ff -m "chore: sync main to staging [skip ci]"
+
+          # 3. Push back to staging
+          git push origin staging
