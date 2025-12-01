@@ -1,5 +1,11 @@
 # frachter
 
+## 1.1.0
+
+### Minor Changes
+
+- 39c5d8f: test sync
+
 ## 1.0.5
 
 ### Patch Changes
