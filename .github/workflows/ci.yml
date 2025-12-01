@@ -10,7 +10,7 @@ on:
 
 jobs:
   validate:
-    name: Validation (Check)
+    name: Quality Gate
     runs-on: ubuntu-latest
     # Optional: Enforce that this runs only for staging -> main PRs
     if: github.head_ref == 'staging'
