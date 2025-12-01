@@ -1,5 +1,11 @@
 # backend
 
+## 1.2.0
+
+### Minor Changes
+
+- 1bde7b5: generic setup
+
 ## 1.1.0
 
 ### Minor Changes
