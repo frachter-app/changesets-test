@@ -1,7 +1,7 @@
 import { file, write, $ } from "bun";
 import * as path from "node:path";
 
-const ROOT = path.resolve(__dirname, "..");
+const ROOT = path.resolve(__dirname, "../..");
 
 // --- CONFIGURATION ---
 const APP_NAME = "cloudprint"; // Directory name under apps/

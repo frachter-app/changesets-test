@@ -18,19 +18,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Environment
+        uses: ./.github/actions/setup
         with:
-          bun-version: 1.3
-
-      # 2. Setup Rust (Ensures 'cargo' command exists)
-      - name: Install Rust Toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Install Dependencies
-        run: pnpm --filter=. install --frozen-lockfile --prod=false
+          install-rust: "true"
 
       - name: Create Release Pull Request or Tag
         uses: changesets/action@v1

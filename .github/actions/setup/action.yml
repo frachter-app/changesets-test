@@ -1,0 +1,73 @@
+name: "Setup Environment"
+description: "Install pnpm, setup Node.js, and install dependencies. Note: Checkout must happen BEFORE using this action."
+
+inputs:
+  install-bun-disable:
+    description: "Whether to disable installation of Bun runtime"
+    required: false
+    default: "false"
+  install-rust: 
+    description: "Whether to install Rust toolchain"
+    required: false
+    default: "false"
+  turbo-cache-disable:
+    description: "Whether to disable Turbo cache"
+    required: false
+    default: "false"
+  workspace:
+    description: "Workspace name to install dependencies for (e.g., cloudprint). Empty = root only, workspace name = 'workspace...' (including deps), '*' = all workspaces including root"
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache Turbo
+      if: inputs.turbo-cache-disable == 'false'
+      uses: actions/cache@v4
+      with:
+        path: .turbo
+        # Note: When multiple jobs run in parallel, you may see a warning:
+        # "Unable to reserve cache with key... another job may be creating this cache"
+        # This is expected and harmless - GitHub Actions will handle the conflict,
+        # and all jobs can still restore from the cache.
+        key: ${{ runner.os }}-turbo-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-turbo-${{ github.sha }}-
+          ${{ runner.os }}-turbo-
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        cache: "pnpm"
+
+    - name: Setup Bun
+      if: inputs.bun-disable == 'false'
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: 1.3
+
+    # Setup Rust (Optional)
+    - name: Install Rust Toolchain
+      if: inputs.install-rust == 'true'
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Install Root Only Development Dependencies
+      if: inputs.workspace == ''
+      shell: bash
+      run: pnpm --filter . install --frozen-lockfile --prod=false
+
+    - name: Install All Dependencies
+      if: inputs.workspace == '*'
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+    - name: Install Workspace Dependencies
+      if: inputs.workspace != '' && inputs.workspace != '*'
+      shell: bash
+      run: pnpm install --filter "${{ inputs.workspace }}..." --frozen-lockfile
+
+    

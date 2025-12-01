@@ -15,12 +15,12 @@ jobs:
           fetch-depth: 0 # Critical: fetch all history so we can merge branches
 
       - name: Configure Git
-        run: |
+        run: | #sh
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Merge Main into Staging
-        run: |
+        run: | #sh
           # 1. Checkout staging
           git checkout staging
 

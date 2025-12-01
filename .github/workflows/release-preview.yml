@@ -28,13 +28,13 @@ jobs:
 
       - name: Generate Preview
         id: generate
-        run: bun run scripts/preview-release.ts
+        run: bun run scripts/workflows/preview-release.ts
 
       - name: Post Comment
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
+          script: | #ts
             const output = `${{ steps.generate.outputs.comment }}`;
 
             // 1. List existing comments
